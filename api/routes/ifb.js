@@ -11,11 +11,11 @@ var table = "opwbids";
 
 
 
-router.get('/', (req, res, next) => {
+/*router.get('/', (req, res, next) => {
     res.status(200).json({
         message: 'Handling GET requests to /products'
     });
-});
+});*/
 
 router.post('/addbid', (req, res, next) => {
     var bidid = "1";
@@ -108,18 +108,24 @@ router.post('/addbid', (req, res, next) => {
     });
 });
 
-router.get('bidId', (req, res, next) => {
+router.get('/:bidId', (req, res, next) => {
+    console.log("fetching item...");
     const id = req.params.bidId;
-    if (id === 'special') {
-        res.status(200).json({
-            message: 'You discovered the special ID',
-            id: id
-        });
-    } else {
-        res.status(200).json({
-            message: 'You passed an ID'
-        });
-    }
+    console.log("fetching item..." + id);
+    var params = {
+        TableName:table,
+        Key:{
+            "bidid": id
+        }
+    }   
+    docClient.get(params, function(err, data) {
+        if (err) {
+            res.status(404).json(JSON.stringify(err, null, 2));
+        } else {
+            res.status(200).json(JSON.stringify(data, null, 2));
+        }
+    });
+
 });
 
 router.patch('bidId', (req, res, next) => {
