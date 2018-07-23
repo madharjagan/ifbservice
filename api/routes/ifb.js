@@ -66,7 +66,7 @@ router.get('/:bidId', (req, res, next) => {
         if (err) {
             res.status(404).json(JSON.stringify(err, null, 2));
         } else {
-            res.status(200).json(JSON.stringify(data, null, 2));
+            res.status(200).json(JSON.stringify(data.Item, null, 2));
             console.log(' data created -- ' + JSON.stringify(data));
         }
     });
