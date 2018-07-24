@@ -41,9 +41,9 @@ router.post('/addbid', (req, res, next) => {
         TableName:table,
         Item: requestdata
     }
-    console.log('Before' + params.Item);
+    console.log('Before' + JSON.stringify(params.Item));
     docClient.put(params, function(err, data) {
-        console.log('inside put action' + err);
+        console.log('inside put action' + data);
         if (err) {
             res.status(500).json(err);
         } else {
@@ -73,16 +73,66 @@ router.get('/:bidId', (req, res, next) => {
 
 });
 
-router.patch('bidId', (req, res, next) => {
-    res.status(200).json({
-        message: 'Updated product!'
-    });
+router.patch('/update', (req, res, next) => {
+   console.log("Updating item####")
+   const id = req.params.bidId;
+   console.log("fetching item..." + id);
+
+   var params = {
+       TableName: table,
+       Key: {
+           "bidid": "2"
+       },
+
+       UpdateExpression: "set Price = :d ",
+		ExpressionAttributeValues:{
+			":d":"5000",
+		},
+   ReturnValues:"UPDATED_NEW"
+       
+   }
+   docClient.update(params, function (err, data) {
+
+       if (data) {
+
+           res.status(200).json(JSON.stringify(data, null));
+           message: 'Updated product!'
+           console.log(' data Updated -- ' + JSON.stringify(data));
+
+       }
+       else {
+         
+           res.status(500).json(JSON.stringify(err, null));
+       }
+   });
 });
 
-router.delete('bidId', (req, res, next) => {
-    res.status(200).json({
-        message: 'Deleted product!'
-    });
+router.delete('/Delete', (req, res, next) => {
+   console.log("Deleting item####")
+   const id = req.params.bidId;
+   console.log("fetching item..." + id);
+
+   var params = {
+       TableName: table,
+       Key: {
+           "bidid": id
+       }
+   }
+   docClient.delete(params, function (err, data) {
+
+       if (data) {
+
+           res.status(200).json(JSON.stringify(data, null));
+           message: 'Updated product!'
+           console.log(' data Updated -- ' + JSON.stringify(data));
+
+       }
+       else {
+           res.status(400).json(JSON.stringify(err, null));
+           res.status(404).json(JSON.stringify(err, null));
+           res.status(500).json(JSON.stringify(err, null));
+       }
+   });
 });
 
 module.exports = router;
