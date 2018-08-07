@@ -73,6 +73,28 @@ router.get('/:bidId', (req, res, next) => {
 
 });
 
+
+router.get('/all/:userid', (req, res, next) => {
+    const id = req.params.userid;
+    var params = {
+        TableName:table,
+        IndexName: "userid-index",
+        KeyConditionExpression: "userid = :user",
+        ExpressionAttributeValues: {
+        ":user": id
+        }
+    }   
+ 
+    docClient.query(params, function(err, data) {
+        if (err) {
+            res.status(404).json(JSON.stringify(err, null, 2));
+        } else {
+            res.status(200).json(JSON.stringify(data.Items, null, 2));
+        }
+    });
+
+});
+
 router.patch('/update', (req, res, next) => {
    console.log("Updating item####")
    const id = req.params.bidId;
